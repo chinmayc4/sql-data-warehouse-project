@@ -31,9 +31,6 @@ Dependencies:
 
 Usage:
     Execute this script in SQL Server to initialize Bronze layer tables.
-
-Version History:
-    v1.0 | 2026-04-25 | Initial creation
 ===============================================================================
 */
 
