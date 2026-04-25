@@ -2,8 +2,7 @@
 ===============================================================================
 File Name   : bronze_layer_tables.sql
 Project     : DataWarehouse - Bronze Layer Setup
-Author      : <Your Name>
-Created On  : 2026-04-25
+Author      : Chinmay Pisu
 Description : 
     This script creates all required tables for the Bronze layer in the 
     Data Warehouse. The Bronze layer stores raw, ingested data from 
