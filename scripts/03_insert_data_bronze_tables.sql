@@ -52,176 +52,222 @@ Usage:
 
 ===============================================================================
 */
-CREATE OR ALTER PROCEDURE bronze.load_bronze AS
+CREATE OR ALTER PROCEDURE bronze.load_bronze 
+AS
 BEGIN
-	DECLARE @start_time DATETIME, @end_time DATETIME, @batch_start_time DATETIME,@batch_end_time DATETIME; 
-	SET @batch_start_time = GETDATE();
-	BEGIN TRY
-		PRINT('============================================================')
-		PRINT('                   Loading Bronze Layer                     ')
-		PRINT('============================================================')
-		-- Insert Data to bronze tables
-		--CRM Tables
-		PRINT('--------------------------------------------')
-		PRINT('            Loading CRM Tables              ')
-		PRINT('--------------------------------------------')
-		--Truncate table before insert (Full Load)
-		SET @start_time = GETDATE();
-		PRINT('---------------------')
-		PRINT('>>> Truncating Table: bronze.crm_users')
-		TRUNCATE TABLE bronze.crm_users;
-		--Insert data in bronze.crm_users table
-		PRINT('>>> Inserting Table: bronze.crm_users')
-		BULK INSERT bronze.crm_users
-		FROM 'C:\Users\squar\Desktop\D\SQL\Dataset\CRM\users.csv'
-		WITH (
-			FIRSTROW = 2,
-			FIELDTERMINATOR = ',',
-			TABLOCK 
-		);
-		SET @end_time = GETDATE();
-		PRINT '>> Loading Duration: ' + CAST(DATEDIFF(second,@start_time,@end_time) AS NVARCHAR) + ' seconds';
-		PRINT('---------------------')
+    DECLARE @start_time DATETIME,
+            @end_time DATETIME,
+            @batch_start_time DATETIME,
+            @batch_end_time DATETIME; 
 
-		--Trunckate table before insert (Full Load)
-		SET @start_time = GETDATE();
-		PRINT('---------------------')
-		PRINT('>>> Truncating Table: bronze.crm_user_activity')
-		TRUNCATE TABLE bronze.crm_user_activity;
-		--Insert data in bronze.crm_users table
-		PRINT('>>> Inserting Data Into: bronze.crm_user_activity')
-		BULK INSERT bronze.crm_user_activity
-		FROM 'C:\Users\squar\Desktop\D\SQL\Dataset\CRM\user_activity.csv'
-		WITH (
-			FIRSTROW = 2,
-			FIELDTERMINATOR = ',',
-			TABLOCK 
-		);
-		SET @end_time = GETDATE();
-		PRINT '>> Loading Duration: ' + CAST(DATEDIFF(second,@start_time,@end_time) AS NVARCHAR) + ' seconds';
-		PRINT('---------------------')
+    SET @batch_start_time = GETDATE();
 
-		--ERP Tables
-		PRINT('--------------------------------------------')
-		PRINT('            Loading ERP Tables              ')
-		PRINT('--------------------------------------------')
-		--Trunckate table before insert (Full Load)
-		SET @start_time = GETDATE();
-		PRINT('---------------------')
-		PRINT('>>> Truncating Table: bronze.crm_user_activity')
-		TRUNCATE TABLE bronze.erp_fees;
-		--Insert data in bronze.crm_users table
-		PRINT('>>> Inserting Data Into: bronze.crm_user_activity')
-		BULK INSERT bronze.erp_fees
-		FROM 'C:\Users\squar\Desktop\D\SQL\Dataset\ERP\fees.csv'
-		WITH (
-			FIRSTROW = 2,
-			FIELDTERMINATOR = ',',
-			TABLOCK 
-		);
-		SET @end_time = GETDATE();
-		PRINT '>> Loading Duration: ' + CAST(DATEDIFF(second,@start_time,@end_time) AS NVARCHAR) + ' seconds';
-		PRINT('---------------------')
+    BEGIN TRY
+        PRINT('============================================================');
+        PRINT('                   Loading Bronze Layer                     ');
+        PRINT('============================================================');
 
-		--Trunckate table before insert (Full Load)
-		SET @start_time = GETDATE();
-		PRINT('---------------------')
-		PRINT('>>> Truncating Table: bronze.crm_user_activity')
-		TRUNCATE TABLE bronze.erp_fraud_signals;
-		--Insert data in bronze.crm_users table
-		PRINT('>>> Inserting Data Into: bronze.crm_user_activity')
-		BULK INSERT bronze.erp_fraud_signals
-		FROM 'C:\Users\squar\Desktop\D\SQL\Dataset\ERP\fraud_signals.csv'
-		WITH (
-			FIRSTROW = 2,
-			FIELDTERMINATOR = ',',
-			TABLOCK 
-		);
-		SET @end_time = GETDATE();
-		PRINT '>> Loading Duration: ' + CAST(DATEDIFF(second,@start_time,@end_time) AS NVARCHAR) + ' seconds';
-		PRINT('---------------------')
+        ------------------------------------------------------------
+        -- CRM Tables
+        ------------------------------------------------------------
+        PRINT('--------------------------------------------');
+        PRINT('            Loading CRM Tables              ');
+        PRINT('--------------------------------------------');
 
-		--Trunckate table before insert (Full Load)
-		SET @start_time = GETDATE();
-		PRINT('---------------------')
-		PRINT('>>> Truncating Table: bronze.crm_user_activity')
-		TRUNCATE TABLE bronze.erp_fraud_signals;
-		--Insert data in bronze.crm_users table
-		PRINT('>>> Inserting Data Into: bronze.crm_user_activity')
-		BULK INSERT bronze.erp_fraud_signals
-		FROM 'C:\Users\squar\Desktop\D\SQL\Dataset\ERP\fraud_signals.csv'
-		WITH (
-			FIRSTROW = 2,
-			FIELDTERMINATOR = ',',
-			TABLOCK 
-		);
-		SET @end_time = GETDATE();
-		PRINT '>> Loading Duration: ' + CAST(DATEDIFF(second,@start_time,@end_time) AS NVARCHAR) + ' seconds';
-		PRINT('---------------------')
+        ------------------------------------------------------------
+        -- bronze.crm_users
+        ------------------------------------------------------------
+        SET @start_time = GETDATE();
 
-		--Trunckate table before insert (Full Load)
-		SET @start_time = GETDATE();
-		PRINT('---------------------')
-		PRINT('>>> Truncating Table: bronze.crm_user_activity')
-		TRUNCATE TABLE bronze.erp_merchants;
-		--Insert data in bronze.crm_users table
-		PRINT('>>> Inserting Data Into: bronze.crm_user_activity')
-		BULK INSERT bronze.erp_merchants
-		FROM 'C:\Users\squar\Desktop\D\SQL\Dataset\ERP\merchants.csv'
-		WITH (
-			FIRSTROW = 2,
-			FIELDTERMINATOR = ',',
-			TABLOCK 
-		);
-		SET @end_time = GETDATE();
-		PRINT '>> Loading Duration: ' + CAST(DATEDIFF(second,@start_time,@end_time) AS NVARCHAR) + ' seconds';
-		PRINT('---------------------')
+        PRINT('---------------------');
+        PRINT('>>> Truncating Table: bronze.crm_users');
+        TRUNCATE TABLE bronze.crm_users;
 
-		--Trunckate table before insert (Full Load)
-		SET @start_time = GETDATE();
-		PRINT('---------------------')
-		PRINT('>>> Truncating Table: bronze.crm_user_activity')
-		TRUNCATE TABLE bronze.erp_refunds;
-		--Insert data in bronze.crm_users table
-		PRINT('>>> Inserting Data Into: bronze.crm_user_activity')
-		BULK INSERT bronze.erp_refunds
-		FROM 'C:\Users\squar\Desktop\D\SQL\Dataset\ERP\refunds.csv'
-		WITH (
-			FIRSTROW = 2,
-			FIELDTERMINATOR = ',',
-			TABLOCK 
-		);
-		SET @end_time = GETDATE();
-		PRINT '>> Loading Duration: ' + CAST(DATEDIFF(second,@start_time,@end_time) AS NVARCHAR) + ' seconds';
-		PRINT('---------------------')
-	
-		--Trunckate table before insert (Full Load)
-		SET @start_time = GETDATE();
-		PRINT('---------------------')
-		PRINT('>>> Truncating Table: bronze.erp_transactions')
-		TRUNCATE TABLE bronze.erp_transactions;
-		--Insert data in bronze.crm_users table
-		PRINT('>>> Inserting Data Into: bronze.erp_transactions')
-		BULK INSERT bronze.erp_transactions
-		FROM 'C:\Users\squar\Desktop\D\SQL\Dataset\ERP\transactions.csv'
-		WITH (
-			FIRSTROW = 2,
-			FIELDTERMINATOR = ',',
-			TABLOCK 
-		);
-		SET @end_time = GETDATE();
-		PRINT '>> Loading Duration: ' + CAST(DATEDIFF(second,@start_time,@end_time) AS NVARCHAR) + ' seconds';
-		PRINT('---------------------')
-	END TRY
+        PRINT('>>> Inserting Table: bronze.crm_users');
+        BULK INSERT bronze.crm_users
+        FROM 'C:\Users\squar\Desktop\D\SQL\Dataset\CRM\users.csv'
+        WITH (
+            FIRSTROW = 2,
+            FIELDTERMINATOR = ',',
+            TABLOCK
+        );
 
-	BEGIN CATCH
-		PRINT('------------------------------------------------')
-		PRINT('ERROR OCCURED DURING LOADING BRONZE LAYER')
-		PRINT 'ERROR MESSAGE' + ERROR_MESSAGE();
-		PRINT 'ERROR MESSAGE' + CAST(ERROR_NUMBER() AS NVARCHAR);
-		PRINT 'ERROR MESSAGE' + CAST(ERROR_STATE() AS NVARCHAR);
-		PRINT('------------------------------------------------')
-	END CATCH
-	SET @batch_end_time = GETDATE();
-	PRINT '>> Loading Duration ETL: ' + CAST(DATEDIFF(second,@batch_start_time,@batch_end_time) AS NVARCHAR) + ' seconds';
-END
+        SET @end_time = GETDATE();
+        PRINT '>> Loading Duration: ' 
+            + CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) 
+            + ' seconds';
+        PRINT('---------------------');
+
+        ------------------------------------------------------------
+        -- bronze.crm_user_activity
+        ------------------------------------------------------------
+        SET @start_time = GETDATE();
+
+        PRINT('---------------------');
+        PRINT('>>> Truncating Table: bronze.crm_user_activity');
+        TRUNCATE TABLE bronze.crm_user_activity;
+
+        PRINT('>>> Inserting Data Into: bronze.crm_user_activity');
+        BULK INSERT bronze.crm_user_activity
+        FROM 'C:\Users\squar\Desktop\D\SQL\Dataset\CRM\user_activity.csv'
+        WITH (
+            FIRSTROW = 2,
+            FIELDTERMINATOR = ',',
+            TABLOCK
+        );
+
+        SET @end_time = GETDATE();
+        PRINT '>> Loading Duration: ' 
+            + CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) 
+            + ' seconds';
+        PRINT('---------------------');
+
+        ------------------------------------------------------------
+        -- ERP Tables
+        ------------------------------------------------------------
+        PRINT('--------------------------------------------');
+        PRINT('            Loading ERP Tables              ');
+        PRINT('--------------------------------------------');
+
+        ------------------------------------------------------------
+        -- bronze.erp_fees
+        ------------------------------------------------------------
+        SET @start_time = GETDATE();
+
+        PRINT('---------------------');
+        PRINT('>>> Truncating Table: erp_fees');
+        TRUNCATE TABLE bronze.erp_fees;
+
+        PRINT('>>> Inserting Data Into: erp_fees');
+        BULK INSERT bronze.erp_fees
+        FROM 'C:\Users\squar\Desktop\D\SQL\Dataset\ERP\fees.csv'
+        WITH (
+            FIRSTROW = 2,
+            FIELDTERMINATOR = ',',
+            TABLOCK
+        );
+
+        SET @end_time = GETDATE();
+        PRINT '>> Loading Duration: ' 
+            + CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) 
+            + ' seconds';
+        PRINT('---------------------');
+
+        ------------------------------------------------------------
+        -- bronze.erp_fraud_signals
+        ------------------------------------------------------------
+        SET @start_time = GETDATE();
+
+        PRINT('---------------------');
+        PRINT('>>> Truncating Table: erp_fraud_signals');
+        TRUNCATE TABLE bronze.erp_fraud_signals;
+
+        PRINT('>>> Inserting Data Into: erp_fraud_signals');
+        BULK INSERT bronze.erp_fraud_signals
+        FROM 'C:\Users\squar\Desktop\D\SQL\Dataset\ERP\fraud_signals.csv'
+        WITH (
+            FIRSTROW = 2,
+            FIELDTERMINATOR = ',',
+            TABLOCK
+        );
+
+        SET @end_time = GETDATE();
+        PRINT '>> Loading Duration: ' 
+            + CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) 
+            + ' seconds';
+        PRINT('---------------------');
+
+        ------------------------------------------------------------
+        -- bronze.erp_merchants
+        ------------------------------------------------------------
+        SET @start_time = GETDATE();
+
+        PRINT('---------------------');
+        PRINT('>>> Truncating Table: bronze.erp_merchants');
+        TRUNCATE TABLE bronze.erp_merchants;
+
+        PRINT('>>> Inserting Data Into: bronze.erp_merchants');
+        BULK INSERT bronze.erp_merchants
+        FROM 'C:\Users\squar\Desktop\D\SQL\Dataset\ERP\merchants.csv'
+        WITH (
+            FIRSTROW = 2,
+            FIELDTERMINATOR = ',',
+            FIELDQUOTE = '"',
+            ROWTERMINATOR = '\n',
+            TABLOCK
+        );
+
+        SET @end_time = GETDATE();
+        PRINT '>> Loading Duration: ' 
+            + CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) 
+            + ' seconds';
+        PRINT('---------------------');
+
+        ------------------------------------------------------------
+        -- bronze.erp_refunds
+        ------------------------------------------------------------
+        SET @start_time = GETDATE();
+
+        PRINT('---------------------');
+        PRINT('>>> Truncating Table: bronze.erp_refunds');
+        TRUNCATE TABLE bronze.erp_refunds;
+
+        PRINT('>>> Inserting Data Into: bronze.erp_refunds');
+        BULK INSERT bronze.erp_refunds
+        FROM 'C:\Users\squar\Desktop\D\SQL\Dataset\ERP\refunds.csv'
+        WITH (
+            FIRSTROW = 2,
+            FIELDTERMINATOR = ',',
+            TABLOCK
+        );
+
+        SET @end_time = GETDATE();
+        PRINT '>> Loading Duration: ' 
+            + CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) 
+            + ' seconds';
+        PRINT('---------------------');
+
+        ------------------------------------------------------------
+        -- bronze.erp_transactions
+        ------------------------------------------------------------
+        SET @start_time = GETDATE();
+
+        PRINT('---------------------');
+        PRINT('>>> Truncating Table: bronze.erp_transactions');
+        TRUNCATE TABLE bronze.erp_transactions;
+
+        PRINT('>>> Inserting Data Into: bronze.erp_transactions');
+        BULK INSERT bronze.erp_transactions
+        FROM 'C:\Users\squar\Desktop\D\SQL\Dataset\ERP\transactions.csv'
+        WITH (
+            FIRSTROW = 2,
+            FIELDTERMINATOR = ',',
+            TABLOCK
+        );
+
+        SET @end_time = GETDATE();
+        PRINT '>> Loading Duration: ' 
+            + CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) 
+            + ' seconds';
+        PRINT('---------------------');
+
+    END TRY
+    BEGIN CATCH
+        PRINT('------------------------------------------------');
+        PRINT('ERROR OCCURED DURING LOADING BRONZE LAYER');
+        PRINT 'ERROR MESSAGE ' + ERROR_MESSAGE();
+        PRINT 'ERROR NUMBER ' + CAST(ERROR_NUMBER() AS NVARCHAR);
+        PRINT 'ERROR STATE ' + CAST(ERROR_STATE() AS NVARCHAR);
+        PRINT('------------------------------------------------');
+    END CATCH;
+
+    SET @batch_end_time = GETDATE();
+
+    PRINT('================================');
+    PRINT('Loading Bronze Layer Completed');
+    PRINT '>> Loading Duration ETL: ' 
+        + CAST(DATEDIFF(SECOND, @batch_start_time, @batch_end_time) AS NVARCHAR) 
+        + ' seconds';
+    PRINT('================================');
+
+END;
