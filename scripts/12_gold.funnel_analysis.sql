@@ -54,7 +54,7 @@ Usage:
 ===============================================================================
 */
 
-CREATE VIEW gold.funnel_analysis
+CREATE OR ALTER VIEW gold.funnel_analysis
 AS
 SELECT
     CAST(event_time AS DATE) AS event_date,
