@@ -50,8 +50,6 @@ Dependencies:
 Usage:
     Execute this script after table creation to populate Bronze layer.
 
-Version History:
-    v1.0 | 2026-04-25 | Initial data load script
 ===============================================================================
 */
 CREATE OR ALTER PROCEDURE bronze.load_bronze AS
