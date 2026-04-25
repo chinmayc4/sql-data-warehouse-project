@@ -46,7 +46,7 @@ Usage:
 ===============================================================================
 */
 
-CREATE VIEW gold.user_activity_metrics
+CREATE OR ALTER VIEW gold.user_activity_metrics
 AS
 SELECT
     CAST(txn_date AS DATE) AS activity_date,
