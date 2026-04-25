@@ -50,7 +50,7 @@ Usage:
 ===============================================================================
 */
 
-CREATE VIEW gold.fraud_rate
+CREATE OR ALTER VIEW gold.fraud_rate
 AS
 SELECT
     CAST(txn_date AS DATE) AS txn_date,
