@@ -47,7 +47,7 @@ Usage:
 ===============================================================================
 */
 
-CREATE VIEW gold.arpu
+CREATE OR ALTER VIEW gold.arpu
 AS
 SELECT
     CAST(txn_date AS DATE) AS txn_date,
