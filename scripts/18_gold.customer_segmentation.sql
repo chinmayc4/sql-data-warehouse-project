@@ -63,7 +63,7 @@ Usage:
 ===============================================================================
 */
 
-CREATE VIEW gold.customer_segmentation
+CREATE OR ALTER VIEW gold.customer_segmentation
 AS
 WITH user_metrics AS (
     SELECT
