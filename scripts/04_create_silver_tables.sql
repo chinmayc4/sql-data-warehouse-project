@@ -1,36 +1,44 @@
 /*
 ===============================================================================
-File Name   : bronze_layer_tables.sql
-Project     : DataWarehouse - Bronze Layer Setup
+File Name   : silver_layer_tables.sql
+Project     : DataWarehouse - Silver Layer Setup
 Author      : Chinmay Pisu
+
 Description : 
-    This script creates all required tables for the Bronze layer in the 
-    Data Warehouse. The Bronze layer stores raw, ingested data from 
-    source systems (CRM and ERP) with minimal transformation.
+    This script creates all required tables for the Silver layer in the 
+    Data Warehouse. The Silver layer stores cleaned, standardized, and 
+    lightly transformed data derived from the Bronze layer.
+
+    Enhancements over Bronze Layer:
+        - Addition of dwh_create_time for audit and lineage tracking
+        - Structured schema for downstream transformations
+        - Prepared for data type standardization and cleansing
 
     Tables Covered:
         - CRM Tables:
-            bronze.crm_users
-            bronze.crm_user_activity
+            silver.crm_users
+            silver.crm_user_activity
 
         - ERP Tables:
-            bronze.erp_transactions
-            bronze.erp_fees
-            bronze.erp_fraud_signals
-            bronze.erp_merchants
-            bronze.erp_refunds
+            silver.erp_fees
+            silver.erp_fraud_signals
+            silver.erp_merchants
+            silver.erp_refunds
+            silver.erp_transactions
 
 Notes:
-    - Existing tables are dropped before creation to ensure idempotency.
-    - Data types are kept as-is to reflect raw ingestion format.
-    - Further transformations and type casting will be handled in Silver layer.
+    - Existing tables are dropped before creation to maintain idempotency.
+    - dwh_create_time captures the record load timestamp.
+    - Some columns are intentionally kept as NVARCHAR for initial standardization;
+      further casting and enrichment can be applied in transformation pipelines.
+    - This layer acts as the foundation for the Gold (business) layer.
 
 Dependencies:
     - Database: DataWarehouse
-    - Schemas: bronze (must exist prior to execution)
+    - Schemas: silver (must exist prior to execution)
 
 Usage:
-    Execute this script in SQL Server to initialize Bronze layer tables.
+    Execute this script after Bronze layer setup to initialize Silver tables.
 ===============================================================================
 */
 --Create all required tables for silver layer
@@ -45,7 +53,8 @@ CREATE TABLE silver.crm_users (
 	signup_date DATE,
 	country NVARCHAR(50),
 	device_type NVARCHAR(50),
-	acquisition_channel NVARCHAR(50)
+	acquisition_channel NVARCHAR(50),
+	dwh_create_time DATETIME2 DEFAULT GETDATE()
 );
 
 IF OBJECT_ID('silver.crm_user_activity','U') IS NOT NULL
@@ -56,7 +65,8 @@ CREATE TABLE silver.crm_user_activity (
 	user_id NVARCHAR(50),
 	event_type NVARCHAR(50),
 	event_time DATETIME,
-	device NVARCHAR(50)
+	device NVARCHAR(50),
+	dwh_create_time DATETIME2 DEFAULT GETDATE()
 );
 
 IF OBJECT_ID('silver.erp_fees','U') IS NOT NULL
@@ -67,7 +77,8 @@ CREATE TABLE silver.erp_fees (
 	processing_fee NVARCHAR(50),
 	service_fee NVARCHAR(50),
 	fx_fee NVARCHAR(50),
-	total_fee NVARCHAR(50)
+	total_fee NVARCHAR(50),
+	dwh_create_time DATETIME2 DEFAULT GETDATE()
 );
 
 IF OBJECT_ID('silver.erp_fraud_signals','U') IS NOT NULL
@@ -78,7 +89,8 @@ CREATE TABLE silver.erp_fraud_signals (
 	ip_address NVARCHAR(50),
 	location NVARCHAR(50),
 	device_id NVARCHAR(50),
-	risk_score NVARCHAR(50)
+	risk_score NVARCHAR(50),
+	dwh_create_time DATETIME2 DEFAULT GETDATE()
 );
 
 IF OBJECT_ID('silver.erp_merchants','U') IS NOT NULL
@@ -90,7 +102,8 @@ CREATE TABLE silver.erp_merchants (
 	category NVARCHAR(50),	
 	country	NVARCHAR(50),
 	onboard_date NVARCHAR(50),	
-	risk_score NVARCHAR(50)
+	risk_score NVARCHAR(50),
+	dwh_create_time DATETIME2 DEFAULT GETDATE()
 );
 
 IF OBJECT_ID('silver.erp_refunds','U') IS NOT NULL
@@ -101,7 +114,8 @@ CREATE TABLE silver.erp_refunds (
 	txn_id	INT,
 	refund_amount NVARCHAR(50),	
 	refund_date	DATE,
-	reason NVARCHAR(50)
+	reason NVARCHAR(50),
+	dwh_create_time DATETIME2 DEFAULT GETDATE()
 );
 
 IF OBJECT_ID('silver.erp_transactions','U') IS NOT NULL
@@ -116,5 +130,6 @@ CREATE TABLE silver.erp_transactions (
 	payment_method NVARCHAR(50),
 	merchant_id	INT,
 	status	NVARCHAR(50),
-	fraud_flag INT
+	fraud_flag INT,
+	dwh_create_time DATETIME2 DEFAULT GETDATE()
 );
