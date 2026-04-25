@@ -1,6 +1,6 @@
 /*
 ===============================================================================
-File Name   : gold_dim_merchants.sql
+File Name   : gold.dim_merchants.sql
 Project     : DataWarehouse - Gold Layer (Dimension Table)
 Author      : Chinmay Pisu
 
