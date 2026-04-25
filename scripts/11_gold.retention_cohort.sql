@@ -53,7 +53,7 @@ Usage:
 ===============================================================================
 */
 
-CREATE VIEW gold.retention_cohort
+CREATE OR ALTER VIEW gold.retention_cohort
 AS
 WITH user_cohort AS (
     SELECT
