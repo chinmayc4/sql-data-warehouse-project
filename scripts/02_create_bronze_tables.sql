@@ -1,76 +1,46 @@
 /*
 ===============================================================================
-File Name   : bronze_layer_setup.sql
+File Name   : bronze_layer_tables.sql
 Project     : DataWarehouse - Bronze Layer Setup
 Author      : Chinmay Pisu
 
 Description : 
-    This script initializes the Bronze layer by creating all required
-    schemas and tables for raw data ingestion from CRM and ERP systems.
+    This script creates all required tables for the Bronze layer in the 
+    Data Warehouse. The Bronze layer stores raw, ingested data from 
+    source systems (CRM and ERP) with minimal transformation.
 
-    Purpose:
-        - Set up the foundational layer for raw data storage
-        - Ensure schema availability before table creation
-        - Maintain idempotency by dropping and recreating tables
-
-    Data Coverage:
+    Tables Covered:
         - CRM Tables:
-            * crm_users
-            * crm_user_activity
+            bronze.crm_users
+            bronze.crm_user_activity
 
         - ERP Tables:
-            * erp_transactions
-            * erp_fees
-            * erp_fraud_signals
-            * erp_merchants
-            * erp_refunds
+            bronze.erp_transactions
+            bronze.erp_fees
+            bronze.erp_fraud_signals
+            bronze.erp_merchants
+            bronze.erp_refunds
 
-    Key Features:
-        - Uses transaction control (BEGIN TRANSACTION / COMMIT / ROLLBACK)
-        - Ensures schema existence dynamically
-        - Drops existing tables before recreation (idempotent execution)
-        - Stores data in raw format (minimal transformation)
-        - Prepares data for downstream processing in Silver layer
+Notes:
+    - Existing tables are dropped before creation to ensure idempotency.
+    - Data types are kept as-is to reflect raw ingestion format.
+    - Further transformations and type casting will be handled in Silver layer.
 
-    Design Notes:
-        - Most numeric fields are stored as NVARCHAR for raw ingestion
-        - Data type casting and validation are handled in Silver layer
-        - User activity user_id is stored as NVARCHAR to match source format
+Dependencies:
+    - Database: DataWarehouse
+    - Schemas: bronze (must exist prior to execution)
 
-    Error Handling:
-        - TRY...CATCH block implemented
-        - Automatic rollback on failure
-        - Error message printed for debugging
-
-    Dependencies:
-        - SQL Server environment
-        - Appropriate permissions for schema and table creation
-
-    Usage:
-        Execute this script to initialize Bronze layer before data loading.
-
+Usage:
+    Execute this script in SQL Server to initialize Bronze layer tables.
 ===============================================================================
 */
 
-BEGIN TRY
-BEGIN TRANSACTION;
+------------------------------------------------------------
+-- bronze.crm_users
+------------------------------------------------------------
+IF OBJECT_ID('bronze.crm_users', 'U') IS NOT NULL
+    DROP TABLE bronze.crm_users;
 
-----------------------------------------------------------------------------
--- Ensure Bronze Schema Exists
-----------------------------------------------------------------------------
-IF NOT EXISTS (
-    SELECT 1 FROM sys.schemas WHERE name = 'bronze'
-)
-BEGIN
-    EXEC('CREATE SCHEMA bronze');
-END;
-
-----------------------------------------------------------------------------
--- CRM TABLES
-----------------------------------------------------------------------------
-
--- Drop & Create: crm_users
-DROP TABLE IF EXISTS bronze.crm_users;
 CREATE TABLE bronze.crm_users (
     user_id INT,
     name NVARCHAR(50),
@@ -81,36 +51,26 @@ CREATE TABLE bronze.crm_users (
     acquisition_channel NVARCHAR(50)
 );
 
--- Drop & Create: crm_user_activity
-DROP TABLE IF EXISTS bronze.crm_user_activity;
+------------------------------------------------------------
+-- bronze.crm_user_activity
+------------------------------------------------------------
+IF OBJECT_ID('bronze.crm_user_activity', 'U') IS NOT NULL
+    DROP TABLE bronze.crm_user_activity;
+
 CREATE TABLE bronze.crm_user_activity (
     event_id INT,
-    user_id NVARCHAR(50), -- raw ingestion format
+    user_id NVARCHAR(50),
     event_type NVARCHAR(50),
     event_time DATETIME,
     device NVARCHAR(50)
 );
 
-----------------------------------------------------------------------------
--- ERP TABLES
-----------------------------------------------------------------------------
+------------------------------------------------------------
+-- bronze.erp_fees
+------------------------------------------------------------
+IF OBJECT_ID('bronze.erp_fees', 'U') IS NOT NULL
+    DROP TABLE bronze.erp_fees;
 
--- Drop & Create: erp_transactions
-DROP TABLE IF EXISTS bronze.erp_transactions;
-CREATE TABLE bronze.erp_transactions (
-    txn_id INT,
-    user_id INT,
-    txn_date DATE,
-    amount NVARCHAR(50), -- raw format (to be cast in Silver)
-    currency NVARCHAR(50),
-    payment_method NVARCHAR(50),
-    merchant_id INT,
-    status NVARCHAR(50),
-    fraud_flag INT
-);
-
--- Drop & Create: erp_fees
-DROP TABLE IF EXISTS bronze.erp_fees;
 CREATE TABLE bronze.erp_fees (
     txn_id INT,
     processing_fee NVARCHAR(50),
@@ -119,50 +79,63 @@ CREATE TABLE bronze.erp_fees (
     total_fee NVARCHAR(50)
 );
 
--- Drop & Create: erp_fraud_signals
-DROP TABLE IF EXISTS bronze.erp_fraud_signals;
+------------------------------------------------------------
+-- bronze.erp_fraud_signals
+------------------------------------------------------------
+IF OBJECT_ID('bronze.erp_fraud_signals', 'U') IS NOT NULL
+    DROP TABLE bronze.erp_fraud_signals;
+
 CREATE TABLE bronze.erp_fraud_signals (
     txn_id INT,
     ip_address NVARCHAR(50),
     location NVARCHAR(50),
     device_id NVARCHAR(50),
-    risk_score NVARCHAR(50) -- raw format
+    risk_score NVARCHAR(50)
 );
 
--- Drop & Create: erp_merchants
-DROP TABLE IF EXISTS bronze.erp_merchants;
+------------------------------------------------------------
+-- bronze.erp_merchants
+------------------------------------------------------------
+IF OBJECT_ID('bronze.erp_merchants', 'U') IS NOT NULL
+    DROP TABLE bronze.erp_merchants;
+
 CREATE TABLE bronze.erp_merchants (
     merchant_id INT,
     merchant_name NVARCHAR(50),
     category NVARCHAR(50),
     country NVARCHAR(50),
     onboard_date DATE,
-    risk_score NVARCHAR(50) -- raw format
+    risk_score NVARCHAR(50)
 );
 
--- Drop & Create: erp_refunds
-DROP TABLE IF EXISTS bronze.erp_refunds;
+------------------------------------------------------------
+-- bronze.erp_refunds
+------------------------------------------------------------
+IF OBJECT_ID('bronze.erp_refunds', 'U') IS NOT NULL
+    DROP TABLE bronze.erp_refunds;
+
 CREATE TABLE bronze.erp_refunds (
     refund_id INT,
     txn_id INT,
-    refund_amount NVARCHAR(50), -- raw format
+    refund_amount NVARCHAR(50),
     refund_date DATE,
     reason NVARCHAR(50)
 );
 
-----------------------------------------------------------------------------
--- Commit Transaction
-----------------------------------------------------------------------------
-COMMIT TRANSACTION;
+------------------------------------------------------------
+-- bronze.erp_transactions
+------------------------------------------------------------
+IF OBJECT_ID('bronze.erp_transactions', 'U') IS NOT NULL
+    DROP TABLE bronze.erp_transactions;
 
-END TRY
-BEGIN CATCH
-
-----------------------------------------------------------------------------
--- Rollback on Failure
-----------------------------------------------------------------------------
-ROLLBACK TRANSACTION;
-
-PRINT 'Error occurred in Bronze Layer Setup: ' + ERROR_MESSAGE();
-
-END CATCH;
+CREATE TABLE bronze.erp_transactions (
+    txn_id INT,
+    user_id INT,
+    txn_date DATE,
+    amount NVARCHAR(50),
+    currency NVARCHAR(50),
+    payment_method NVARCHAR(50),
+    merchant_id INT,
+    status NVARCHAR(50),
+    fraud_flag INT
+);
