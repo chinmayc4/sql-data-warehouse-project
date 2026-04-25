@@ -50,7 +50,7 @@ Usage:
 ===============================================================================
 */
 
-CREATE VIEW gold.dim_users
+CREATE OR ALTER VIEW gold.dim_users
 AS
 SELECT
     user_id,
