@@ -1,3 +1,38 @@
+/*
+===============================================================================
+File Name   : bronze_layer_tables.sql
+Project     : DataWarehouse - Bronze Layer Setup
+Author      : Chinmay Pisu
+Description : 
+    This script creates all required tables for the Bronze layer in the 
+    Data Warehouse. The Bronze layer stores raw, ingested data from 
+    source systems (CRM and ERP) with minimal transformation.
+
+    Tables Covered:
+        - CRM Tables:
+            bronze.crm_users
+            bronze.crm_user_activity
+
+        - ERP Tables:
+            bronze.erp_transactions
+            bronze.erp_fees
+            bronze.erp_fraud_signals
+            bronze.erp_merchants
+            bronze.erp_refunds
+
+Notes:
+    - Existing tables are dropped before creation to ensure idempotency.
+    - Data types are kept as-is to reflect raw ingestion format.
+    - Further transformations and type casting will be handled in Silver layer.
+
+Dependencies:
+    - Database: DataWarehouse
+    - Schemas: bronze (must exist prior to execution)
+
+Usage:
+    Execute this script in SQL Server to initialize Bronze layer tables.
+===============================================================================
+*/
 --Create all required tables for silver layer
 
 IF OBJECT_ID('silver.crm_users','U') IS NOT NULL
