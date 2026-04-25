@@ -56,7 +56,7 @@ Usage:
 ===============================================================================
 */
 
-CREATE VIEW gold.fraud_anomalies
+CREATE OR ALTER VIEW gold.fraud_anomalies
 AS
 SELECT
     txn_id,
