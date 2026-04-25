@@ -1,3 +1,61 @@
+/*
+===============================================================================
+File Name   : gold_fact_transactions.sql
+Project     : DataWarehouse - Gold Layer (Fact Table)
+Author      : Chinmay Pisu
+
+Description : 
+    This script creates the Gold layer fact view 'gold.fact_transactions',
+    which provides a consolidated, analytics-ready dataset for transaction
+    analysis by combining data from multiple Silver layer tables.
+
+    Purpose:
+        - Serve as a central fact table for reporting and analytics
+        - Enable business-level metrics such as revenue, refunds, and fraud analysis
+        - Simplify querying by pre-joining multiple transactional datasets
+
+    Data Sources:
+        - silver.erp_transactions (base transaction data)
+        - silver.erp_fees (transaction fees)
+        - silver.erp_refunds (refund details)
+        - silver.erp_fraud_signals (risk and fraud indicators)
+
+    Key Transformations:
+        - Joins multiple Silver tables to create a unified dataset
+        - Calculates net transaction amount (amount - refund)
+        - Handles null values using ISNULL for consistency
+        - Derives business flags:
+            * is_refunded
+            * is_success
+        - Includes fraud risk score for analytical use cases
+
+    Output Columns:
+        - Transaction identifiers and dimensions (txn_id, user_id, merchant_id, txn_date)
+        - Financial metrics (amount, total_fee, refund_amount, net_amount)
+        - Status indicators (status, fraud_flag, is_refunded, is_success)
+        - Risk metrics (risk_score)
+
+    Use Cases:
+        - Revenue and net sales analysis
+        - Refund and failure rate tracking
+        - Fraud detection and risk monitoring
+        - Building dashboards (Power BI, Tableau)
+        - KPI reporting for business stakeholders
+
+Notes:
+    - This is a view (not a physical table), ensuring real-time data access
+    - Assumes Silver layer data is clean and validated
+    - Can be extended with additional dimensions for deeper analysis
+
+Dependencies:
+    - Silver layer tables must be populated before execution
+
+Usage:
+    SELECT * FROM gold.fact_transactions;
+
+===============================================================================
+*/
+
 CREATE VIEW gold.fact_transactions
 AS
 SELECT
