@@ -1,6 +1,6 @@
 /*
 ===============================================================================
-File Name   : silver_layer_tables.sql
+File Name   : silver.create_tables.sql
 Project     : DataWarehouse - Silver Layer Setup
 Author      : Chinmay Pisu
 
