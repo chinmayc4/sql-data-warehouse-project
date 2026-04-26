@@ -1,6 +1,6 @@
 /*
 ===============================================================================
-File Name   : bronze_layer_data_load.sql
+File Name   : bronze.load_data.sql
 Project     : DataWarehouse - Bronze Layer Data Ingestion
 Author      : Chinmay Pisu
 Description : 
