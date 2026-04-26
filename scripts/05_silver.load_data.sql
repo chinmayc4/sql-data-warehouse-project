@@ -1,6 +1,6 @@
 /*
 ===============================================================================
-File Name   : silver_load_procedure.sql
+File Name   : silver.load_data.sql
 Project     : DataWarehouse - Silver Layer Transformation
 Author      : Chinmay Pisu
 
